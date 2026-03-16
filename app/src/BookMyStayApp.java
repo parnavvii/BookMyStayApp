@@ -1,17 +1,74 @@
+import java.util.HashMap;
+import java.util.Map;
+
+
 public class BookMyStayApp {
+
+    // HashMap storing room type and available count
+    private Map<String, Integer> roomInventory;
+
+    /**
+     * Constructor initializes room inventory
+     */
+    public BookMyStayApp() {
+        roomInventory = new HashMap<>();
+
+        // Initialize room availability
+        roomInventory.put("Single", 10);
+        roomInventory.put("Double", 6);
+        roomInventory.put("Suite", 3);
+    }
+
+    /**
+     * Get availability of a room type
+     */
+    public int getAvailability(String roomType) {
+        return roomInventory.getOrDefault(roomType, 0);
+    }
+
+    /**
+     * Update room availability
+     */
+    public void updateAvailability(String roomType, int change) {
+        if (roomInventory.containsKey(roomType)) {
+            int updated = roomInventory.get(roomType) + change;
+            roomInventory.put(roomType, updated);
+        }
+    }
+
+    /**
+     * Display current inventory
+     */
+    public void displayInventory() {
+        System.out.println("\nCurrent Room Inventory:");
+
+        for (Map.Entry<String, Integer> entry : roomInventory.entrySet()) {
+            System.out.println(entry.getKey() + " Rooms Available: " + entry.getValue());
+        }
+    }
+
+    /**
+     * Application entry point
+     */
     public static void main(String[] args) {
 
-        // Display welcome message
-        System.out.println("=====================================");
-        System.out.println("      Welcome to Book My Stay        ");
-        System.out.println("   Hotel Booking Management System   ");
-        System.out.println("           Version 1.0               ");
-        System.out.println("=====================================");
+        System.out.println("===================================");
+        System.out.println("Book My Stay - Hotel Booking App");
+        System.out.println("Version 3.1");
+        System.out.println("Centralized Room Inventory System");
+        System.out.println("===================================");
 
-        // Inform user that application started successfully
-        System.out.println("Application started successfully.");
+        // Initialize inventory
+        BookMyStayApp inventory = new BookMyStayApp();
 
-        // End of application flow
-        System.out.println("Thank you for using Book My Stay!");
+        // Display inventory
+        inventory.displayInventory();
+
+        // Simulate booking
+        System.out.println("\nBooking 1 Single Room...");
+        inventory.updateAvailability("Single", -1);
+
+        // Display updated inventory
+        inventory.displayInventory();
     }
 }
