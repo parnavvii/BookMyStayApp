@@ -1,23 +1,13 @@
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Book My Stay - Hotel Booking Management System
  *
- * Use Case 5: Booking Request (First-Come-First-Served)
- *
- * This program demonstrates how booking requests are collected
- * and stored in a queue structure to preserve arrival order.
- * No room allocation or inventory updates happen at this stage.
- *
- * @author Student
- * @version 5.0
+ * Use Case 6: Room Allocation Processing
  */
 public class BookMyStayApp {
 
-    /**
-     * Reservation represents a guest booking request
-     */
+    // Reservation class (same as your previous code)
     static class Reservation {
         String guestName;
         String roomType;
@@ -26,54 +16,74 @@ public class BookMyStayApp {
             this.guestName = guestName;
             this.roomType = roomType;
         }
-
-        public String toString() {
-            return "Guest: " + guestName + " | Room Type: " + roomType;
-        }
     }
 
-    // Booking request queue (FIFO)
+    // FIFO Queue
     private Queue<Reservation> bookingQueue = new LinkedList<>();
 
-    /**
-     * Add a booking request to the queue
-     */
-    public void addBookingRequest(String guestName, String roomType) {
-        Reservation reservation = new Reservation(guestName, roomType);
-        bookingQueue.add(reservation);
-        System.out.println("Booking request received from " + guestName + " for " + roomType + " room.");
+    // Inventory
+    private Map<String, Integer> inventory = new HashMap<>();
+
+    // Track room numbers per type (for sequential IDs)
+    private Map<String, Integer> roomCounters = new HashMap<>();
+
+    public BookMyStayApp() {
+        inventory.put("Single", 2);
+        inventory.put("Double", 2);
+        inventory.put("Suite", 1);
+
+        roomCounters.put("Single", 0);
+        roomCounters.put("Double", 0);
+        roomCounters.put("Suite", 0);
     }
 
-    /**
-     * Display all pending booking requests
-     */
-    public void displayBookingQueue() {
-        System.out.println("\nPending Booking Requests (FIFO Order):");
+    // Add booking request
+    public void addBookingRequest(String guestName, String roomType) {
+        bookingQueue.add(new Reservation(guestName, roomType));
+    }
 
-        for (Reservation r : bookingQueue) {
-            System.out.println(r);
+    // Generate sequential Room ID (Single-1, Single-2, etc.)
+    private String generateRoomId(String roomType) {
+        int count = roomCounters.get(roomType) + 1;
+        roomCounters.put(roomType, count);
+        return roomType + "-" + count;
+    }
+
+    // Process bookings
+    public void processBookings() {
+        System.out.println("Room Allocation Processing\n");
+
+        while (!bookingQueue.isEmpty()) {
+            Reservation r = bookingQueue.poll();
+
+            if (inventory.getOrDefault(r.roomType, 0) > 0) {
+
+                String roomId = generateRoomId(r.roomType);
+
+                // Update inventory
+                inventory.put(r.roomType, inventory.get(r.roomType) - 1);
+
+                System.out.println("Booking confirmed for Guest: "
+                        + r.guestName + ", Room ID: " + roomId);
+
+            } else {
+                System.out.println("Booking failed for Guest: "
+                        + r.guestName + " (No rooms available)");
+            }
         }
     }
 
-    /**
-     * Application entry point
-     */
     public static void main(String[] args) {
-
-        System.out.println("=====================================");
-        System.out.println("Book My Stay - Booking Request Queue");
-        System.out.println("Version 5.0");
-        System.out.println("=====================================");
 
         BookMyStayApp system = new BookMyStayApp();
 
-        // Simulate booking requests
-        system.addBookingRequest("Alice", "Single");
-        system.addBookingRequest("Bob", "Double");
-        system.addBookingRequest("Charlie", "Suite");
+        // Sample input (same style)
+        system.addBookingRequest("Abhi", "Single");
+        system.addBookingRequest("Subha", "Single");
+        system.addBookingRequest("Vanmathi", "Suite");
 
-        // Display queued requests
-        system.displayBookingQueue();
+        // Process bookings
+        system.processBookings();
     }
 }
 
