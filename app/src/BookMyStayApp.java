@@ -1,17 +1,74 @@
+import java.util.*;
+
+/**
+ * Book My Stay - Hotel Booking Management System
+ *
+ * Use Case 7: Add-On Service Selection
+ */
 public class BookMyStayApp {
+
+    // Add-On Service class
+    static class Service {
+        String name;
+        double cost;
+
+        Service(String name, double cost) {
+            this.name = name;
+            this.cost = cost;
+        }
+    }
+
+    // Map: Reservation ID → List of Services
+    private Map<String, List<Service>> serviceMap = new HashMap<>();
+
+    /**
+     * Add service to reservation
+     */
+    public void addService(String reservationId, String serviceName, double cost) {
+        serviceMap.putIfAbsent(reservationId, new ArrayList<>());
+        serviceMap.get(reservationId).add(new Service(serviceName, cost));
+    }
+
+    /**
+     * Calculate total add-on cost
+     */
+    public double calculateTotalCost(String reservationId) {
+        double total = 0;
+
+        List<Service> services = serviceMap.get(reservationId);
+
+        if (services != null) {
+            for (Service s : services) {
+                total += s.cost;
+            }
+        }
+
+        return total;
+    }
+
+    /**
+     * Display result
+     */
+    public void displayServices(String reservationId) {
+        System.out.println("Add-On Service Selection");
+        System.out.println("Reservation ID: " + reservationId);
+
+        double total = calculateTotalCost(reservationId);
+        System.out.println("Total Add-On Cost: " + total);
+    }
+
     public static void main(String[] args) {
 
-        // Display welcome message
-        System.out.println("=====================================");
-        System.out.println("      Welcome to Book My Stay        ");
-        System.out.println("   Hotel Booking Management System   ");
-        System.out.println("           Version 1.0               ");
-        System.out.println("=====================================");
+        BookMyStayApp system = new BookMyStayApp();
 
-        // Inform user that application started successfully
-        System.out.println("Application started successfully.");
+        // Example reservation from previous use case
+        String reservationId = "Single-1";
 
-        // End of application flow
-        System.out.println("Thank you for using Book My Stay!");
+        // Add services
+        system.addService(reservationId, "Breakfast", 500);
+        system.addService(reservationId, "Spa", 1000);
+
+        // Display output
+        system.displayServices(reservationId);
     }
 }
