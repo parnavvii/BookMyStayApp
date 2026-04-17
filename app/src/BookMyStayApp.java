@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 class Booking {
     String reservationId;
@@ -95,4 +96,3 @@ public class BookMyStayApp {
         service.cancelBooking("Single-1");
     }
 }
-
