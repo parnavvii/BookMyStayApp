@@ -1,50 +1,55 @@
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
- * Train Consist Management App
+ * Book My Stay - Hotel Booking Management System
  *
- * UC9: Group Bogies by Type using Collectors.groupingBy()
+ * Use Case 8: Booking History & Reporting
  */
 public class BookMyStayApp {
 
-    // Bogie class
-    static class Bogie {
-        String name;   // e.g., Sleeper, AC Chair, First Class, Goods
-        String type;   // Passenger / Goods
+    // Reservation class (same structure as earlier use cases)
+    static class Reservation {
+        String guestName;
+        String roomType;
 
-        Bogie(String name, String type) {
-            this.name = name;
-            this.type = type;
+        Reservation(String guestName, String roomType) {
+            this.guestName = guestName;
+            this.roomType = roomType;
         }
+    }
 
-        public String toString() {
-            return name + " (" + type + ")";
+    // Booking History (List preserves insertion order)
+    private List<Reservation> bookingHistory = new ArrayList<>();
+
+    /**
+     * Add confirmed booking to history
+     */
+    public void addToHistory(String guestName, String roomType) {
+        bookingHistory.add(new Reservation(guestName, roomType));
+    }
+
+    /**
+     * Generate booking report
+     */
+    public void generateReport() {
+        System.out.println("Booking History and Reporting\n");
+        System.out.println("Booking History Report");
+
+        for (Reservation r : bookingHistory) {
+            System.out.println("Guest: " + r.guestName + ", Room Type: " + r.roomType);
         }
     }
 
     public static void main(String[] args) {
 
-        // Step 1: Create list of bogies
-        List<Bogie> bogies = new ArrayList<>();
+        BookMyStayApp system = new BookMyStayApp();
 
-        bogies.add(new Bogie("Sleeper", "Passenger"));
-        bogies.add(new Bogie("AC Chair", "Passenger"));
-        bogies.add(new Bogie("First Class", "Passenger"));
-        bogies.add(new Bogie("Sleeper", "Passenger")); // duplicate for grouping
-        bogies.add(new Bogie("Cylindrical", "Goods"));
-        bogies.add(new Bogie("Rectangular", "Goods"));
+        // Simulating confirmed bookings (from previous use cases)
+        system.addToHistory("Abhi", "Single");
+        system.addToHistory("Subha", "Double");
+        system.addToHistory("Vanmathi", "Suite");
 
-        // Step 2: Convert to stream and group by bogie name
-        Map<String, List<Bogie>> groupedBogies =
-                bogies.stream()
-                        .collect(Collectors.groupingBy(b -> b.name));
-
-        // Step 3: Display grouped result
-        System.out.println("Grouped Bogies by Type:\n");
-
-        for (String key : groupedBogies.keySet()) {
-            System.out.println(key + " -> " + groupedBogies.get(key));
-        }
+        // Generate report
+        system.generateReport();
     }
 }
